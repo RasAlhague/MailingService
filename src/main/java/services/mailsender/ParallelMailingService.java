@@ -18,7 +18,7 @@ public class ParallelMailingService implements MailingService {
     }
 
     @Override
-    public void notifyMarkedUsers() {
+    public void notifyMarkedUsersWith(Mail mail) {
         List<User> markedUsers = userStorage.getMarked();
     }
 }

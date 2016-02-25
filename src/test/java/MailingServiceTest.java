@@ -1,6 +1,5 @@
 import dao.User;
 import dao.UserStorage;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -49,7 +48,7 @@ public class MailingServiceTest {
 
     @Test
     public void notifyMarkedUsersTest() throws Exception {
-        mailingService.notifyMarkedUsers();
+        mailingService.notifyMarkedUsersWith();
 
         verify(userStorage).getMarked();
     }

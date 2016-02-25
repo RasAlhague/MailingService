@@ -1,5 +1,7 @@
 package services;
 
+import services.mailsender.Mail;
+
 public interface MailingService {
-    void notifyMarkedUsers();
+    void notifyMarkedUsersWith(Mail mail);
 }
