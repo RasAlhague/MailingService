@@ -1,3 +1,4 @@
+import dao.User;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +12,8 @@ public class ConsoleMailSenderTest {
     @Test
     public void sendTest() throws Exception {
         Mail mail = new Mail("subj", "body");
-        MailSender mailSender = new ConsoleMailSender(mail);
+        User user = new User("testuser", true);
+        MailSender mailSender = new ConsoleMailSender(mail, user);
         MailSendResult result = mailSender.call();
 
         Assert.assertTrue(result.getOk());

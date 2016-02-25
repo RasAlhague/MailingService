@@ -1,14 +1,17 @@
 import dao.User;
 import dao.UserStorage;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import services.MailingService;
+import services.ParallelMailingService;
 import services.mailsender.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Future;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
@@ -34,13 +37,6 @@ public class MailingServiceTest {
 
             users.add(user);
         }
-        for (int i = 0; i < 10; i++) {
-            User user = new User();
-            user.setName("user " + i + " UNmarked");
-            user.setMarked(false);
-
-            users.add(user);
-        }
 
         when(userStorage.getMarked()).thenReturn(users);
         mailingService = new ParallelMailingService(userStorage, threadPoolSize);
@@ -48,8 +44,17 @@ public class MailingServiceTest {
 
     @Test
     public void notifyMarkedUsersTest() throws Exception {
-        mailingService.notifyMarkedUsersWith();
+        Mail mail = new Mail("subj", "body");
+
+        List<Future<MailSendResult>> futureList = mailingService.notifyMarkedUsersWith(mail);
 
         verify(userStorage).getMarked();
+        Assert.assertNotNull(futureList);
+
+        for (Future<MailSendResult> mailSendResultFuture : futureList) {
+            MailSendResult mailSendResult = mailSendResultFuture.get();
+            Assert.assertTrue(mailSendResult.getOk());
+            Assert.assertTrue(mailSendResult.getUser().getMarked());
+        }
     }
 }
