@@ -6,10 +6,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import services.MailingService;
-import services.mailsender.ConsoleMailSender;
-import services.mailsender.Mail;
-import services.mailsender.MailSendResult;
-import services.mailsender.MailSender;
+import services.mailsender.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +17,16 @@ import static org.mockito.Mockito.when;
 
 public class MailingServiceTest {
     @Mock
-    UserStorage userStorage;
+    private UserStorage userStorage;
 
-    MailingService mailingService;
+    private MailingService mailingService;
+
+    private int threadPoolSize = 20;
 
     @Before
     public void setup() {
+        MockitoAnnotations.initMocks(this);
+
         List<User> users = new ArrayList<>();
         for (int i = 0; i < 50; i++) {
             User user = new User();
@@ -43,7 +44,7 @@ public class MailingServiceTest {
         }
 
         when(userStorage.getMarked()).thenReturn(users);
-        mailingService = new ParallelMailingService(userStorage);
+        mailingService = new ParallelMailingService(userStorage, threadPoolSize);
     }
 
     @Test
